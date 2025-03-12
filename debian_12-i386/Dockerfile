@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM i386/debian:12
 
 ENV DPDK_VERSION=v22.11.6
 
@@ -9,9 +9,13 @@ RUN apt-get install -yy --no-install-recommends \
 	dirmngr \
 	gnupg-agent
 
-RUN sed -e 's/^deb http/deb [arch=amd64,i386] http/g' /etc/apt/sources.list -i
+RUN rm -f /etc/apt/sources.list.d/debian.sources
+
+RUN [ -f /etc/apt/sources.list ] || echo "deb http://deb.debian.org/debian bookworm main contrib non-free non-free-firmware" > /etc/apt/sources.list
 
 RUN dpkg --add-architecture i386
+
+RUN sed -e 's/^deb /deb [arch=amd64,i386] /g' /etc/apt/sources.list -i
 
 RUN apt-get update --fix-missing
 
@@ -21,7 +25,7 @@ RUN apt-get install -yy \
   libcunit1-dev:i386 \
   libpcap-dev:i386 \
   libssl-dev:i386 \
-  lib32stdc++-7-dev \
+  g++-multilib \
   autoconf \
   automake \
   ccache \
@@ -36,11 +40,10 @@ RUN apt-get install -yy \
   net-tools \
   ninja-build \
   python3-pip \
-  sudo
-
-RUN pip3 install \
+  sudo \
   meson \
-	pyelftools
+  python3-pyelftools \
+  libsystemd-dev
 
 RUN cd $HOME && \
     git clone http://dpdk.org/git/dpdk-stable --branch ${DPDK_VERSION} --depth 1 ./dpdk && \
