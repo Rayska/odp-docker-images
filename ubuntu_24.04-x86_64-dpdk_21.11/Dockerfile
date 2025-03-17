@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM ubuntu:24.04
 
 ENV DPDK_VERSION=v21.11.8 \
   IPSEC_MB_VERSION=v1.1
@@ -34,10 +34,8 @@ RUN apt-get install -yy \
   net-tools \
   ninja-build \
   python3-pip \
+  python3-pyelftools \
   sudo
-
-RUN pip3 install \
-  pyelftools
 
 RUN cd $HOME && \
     git clone https://github.com/intel/intel-ipsec-mb.git --branch ${IPSEC_MB_VERSION} --depth 1 ./ipsec-mb && \
@@ -53,7 +51,7 @@ RUN cd $HOME && \
     meson setup build && \
     cd build && \
     meson configure -Dplatform=generic && \
-    meson configure -Ddisable_apps=* && \
+    meson configure -Dexamples= && \
     meson configure -Dtests=false && \
     meson configure -Denable_drivers=crypto/*,dma/*,mempool/ring,net/pcap && \
     ninja install && \
