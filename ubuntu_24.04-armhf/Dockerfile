@@ -53,7 +53,7 @@ RUN apt-get update --fix-missing
 
 # Install fails if done together with other packages
 RUN apt-get install -o APT::Immediate-Configure=false -y \
-  libc6:armhf
+  libc6-dev:armhf
 
 RUN apt-get install -y \
   crossbuild-essential-armhf \
@@ -63,7 +63,8 @@ RUN apt-get install -y \
   libpcap-dev:armhf \
   libssl-dev:armhf \
   libstdc++-10-dev:armhf \
-  #pkg-config-arm-linux-gnueabihf \
+  gcc-arm-linux-gnueabihf \
+  g++-arm-linux-gnueabihf \
   autoconf \
   automake \
   ccache \
