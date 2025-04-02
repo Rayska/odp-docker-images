@@ -22,8 +22,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        image: ['ubuntu_24.04-x86_64-dpdk_22.11',
-                'ubuntu_24.04-x86_64-dpdk_24.11']
+        image: ['ubuntu_24.04-armhf']
 
     steps:
       - uses: actions/checkout@v4

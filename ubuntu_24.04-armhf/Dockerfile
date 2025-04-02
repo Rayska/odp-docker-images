@@ -1,6 +1,6 @@
 FROM ubuntu:24.04
 
-ENV DPDK_VERSION=v22.11.6
+ENV DPDK_VERSION=v23.11.3
 
 RUN apt-get update
 
@@ -57,6 +57,7 @@ RUN apt-get install -y \
   libcli-dev:armhf \
   libconfig-dev:armhf \
   libcunit1-dev:armhf \
+  libnuma-dev \
   libpcap-dev:armhf \
   libssl-dev:armhf \
   libstdc++-10-dev:armhf \
@@ -75,6 +76,9 @@ RUN apt-get install -y \
   ninja-build \
   python3-pyelftools \
   sudo
+
+ENV CFLAGS="-march=armv7-a+fp"
+ENV CXXFLAGS="-march=armv7-a+fp"
 
 RUN cd $HOME && \
     git clone http://dpdk.org/git/dpdk-stable --branch ${DPDK_VERSION} --depth 1 ./dpdk && \
