@@ -1,11 +1,11 @@
 FROM i386/debian:12
 
-ENV DPDK_VERSION=v22.11.6
+ENV DPDK_VERSION=v23.11.4
 
 RUN apt-get update
 
 RUN apt-get install -yy --no-install-recommends \
-        software-properties-common \
+  software-properties-common \
 	dirmngr \
 	gnupg-agent
 
@@ -18,6 +18,8 @@ RUN dpkg --add-architecture i386
 RUN sed -e 's/^deb /deb [arch=amd64,i386] /g' /etc/apt/sources.list -i
 
 RUN apt-get update --fix-missing
+
+RUN apt-get install -y --allow-downgrades perl-base=5.36.0-7+deb12u1
 
 RUN apt-get install -yy \
   libcli-dev:i386 \
@@ -46,18 +48,18 @@ RUN apt-get install -yy \
   libsystemd-dev
 
 RUN cd $HOME && \
-    git clone http://dpdk.org/git/dpdk-stable --branch ${DPDK_VERSION} --depth 1 ./dpdk && \
-    cd dpdk && \
-    PKG_CONFIG_LIBDIR=/usr/lib/i386-linux-gnu/pkgconfig \
-    meson setup -Dc_args='-m32' -Dc_link_args='-m32' build && \
-    cd build && \
-    meson configure -Dlibdir=lib/i386-linux-gnu && \
-    meson configure -Dmachine=default && \
-    meson configure -Dprefix=/usr && \
-    meson configure -Ddisable_apps=* && \
-    meson configure -Dtests=false && \
-    meson configure -Denable_drivers=crypto/*,dma/*,net/pcap && \
-    ninja install && \
-    ldconfig && \
-    cd $HOME && \
-    rm -r ./dpdk
+  git clone http://dpdk.org/git/dpdk-stable --branch ${DPDK_VERSION} --depth 1 ./dpdk && \
+  cd dpdk && \
+  PKG_CONFIG_LIBDIR=/usr/lib/i386-linux-gnu/pkgconfig \
+  meson setup -Dc_args='-m32' -Dc_link_args='-m32' build && \
+  cd build && \
+  meson configure -Dlibdir=lib/i386-linux-gnu && \
+  meson configure -Dmachine=default && \
+  meson configure -Dprefix=/usr && \
+  meson configure -Ddisable_apps=* && \
+  meson configure -Dtests=false && \
+  meson configure -Denable_drivers=crypto/*,dma/*,net/pcap && \
+  ninja install && \
+  ldconfig && \
+  cd $HOME && \
+  rm -r ./dpdk
